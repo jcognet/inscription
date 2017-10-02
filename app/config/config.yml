@@ -38,7 +38,7 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     globals:
-      #version: "%kernel.version%"
+      version: "0.0.1"
     form_themes:
       - 'bootstrap_3_layout.html.twig'
 
@@ -71,3 +71,11 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb' and 'couchdb'
+    firewall_name: main
+    user_class: AppBundle\Entity\User
+    from_email:
+        address: "%mailer_from%"
+        sender_name: "%mailer_from%"

@@ -15,5 +15,12 @@ parameters:
     mailer_user: ~
     mailer_password: ~
 
+    # Expéditeur du email
+    mailer_from: 'jcognet@gmail.com'
+
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    # Liste des urls de développement
+    url_dev:
+      -dev.fun-effect.com

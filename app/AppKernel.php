@@ -7,6 +7,10 @@ class AppKernel extends Kernel
 {
     const VERSION = "0.0.1";
 
+    public function getVersion(){
+        return self::VERSION;
+    }
+
     public function registerBundles()
     {
         $bundles = [
@@ -18,6 +22,8 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new AppBundle\AppBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
