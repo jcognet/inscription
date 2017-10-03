@@ -1,37 +1,27 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{{ path('homepage') }}">Inscription</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li{% if page_est_actif('homepage') %} class="active" {% endif %}><a href="{{ path('homepage') }}">Accueil</a>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-                       aria-expanded="false">
-                        Fonctionnement <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a target="_blank" href="https://github.com/jcognet/changesous/issues">Bug</a></li>
-                        <li><a target="_blank" href="https://github.com/jcognet/changesous/wiki">Wiki</a></li>
-                        <li><a target="_blank" href="https://github.com/jcognet/changesous">Github</a></li>
-                    </ul>
-                </li>
-
-                {% if app.user %}
-                    <li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
-                {% else %}
-                    <li><a href="{{ path('fos_user_security_login') }}">Connexion</a></li>
-                {% endif %}
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div><!--/.container-fluid -->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Inscription</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="ddlFonctionnement" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Fonctionnement</a>
+                <div class="dropdown-menu" aria-labelledby="ddlFonctionnement">
+                    <a target="_blank" class="dropdown-item" href="https://github.com/jcognet/changesous/issues">Bug</a>
+                    <a target="_blank" class="dropdown-item"  href="https://github.com/jcognet/changesous/wiki">Wiki</a>
+                    <a target="_blank" class="dropdown-item" href="https://github.com/jcognet/changesous">Github</a>
+                </div>
+            </li>
+            {% if app.user %}
+                <li class="nav-item"><a class="nav-link"  href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
+            {% else %}
+                <li class="nav-item"><a class="nav-link"  href="{{ path('fos_user_security_login') }}">Connexion</a></li>
+            {% endif %}
+        </ul>
+        <form class="form-inline my-2 my-md-0">
+            <input class="form-control" type="text" placeholder="Rechercher">
+        </form>
+    </div>
 </nav>
+

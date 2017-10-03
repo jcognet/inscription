@@ -6,49 +6,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Inscription - {% block title %}{% endblock %}</title>
-
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-    <script src="{{ asset('js/jquery-3-2.1.min.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
     {% block javascripts %}{% endblock %}
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('css/footer.css') }}" />
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/footer.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}"/>
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
 
 
-<!-- Begin page content -->
+{% block menu %}
+    {% embed '::menu_header.html.twig' %}
+    {% endembed %}
+{% endblock %}
 <div class="container-fluid">
-    {% block menu %}
-        {% embed '::menu_header.html.twig' %}
-        {% endembed %}
-    {% endblock %}
-
-
-    <div class="page-header">
-        <h1>
-            {% block header %}
-                Fun-Effect
-            {% endblock header %}
-        </h1>
+    <div class="row">
+        <div class="page-header">
+            <h1>
+                {% block header %}
+                    Inscription Aikido
+                {% endblock header %}
+            </h1>
+        </div>
+        {% for flash_message in app.session.flashBag.get('erreur') %}
+            <div class="alert alert-danger">
+                {{ flash_message }}
+            </div>
+        {% endfor %}
+        {% for flash_message in app.session.flashBag.get('notice') %}
+            <div class="alert alert-success">
+                {{ flash_message }}
+            </div>
+        {% endfor %}
     </div>
-    {% for flash_message in app.session.flashBag.get('erreur') %}
-        <div class="alert alert-danger">
-            {{ flash_message }}
-        </div>
-    {% endfor %}
-    {% for flash_message in app.session.flashBag.get('notice') %}
-        <div class="alert alert-success">
-            {{ flash_message }}
-        </div>
-    {% endfor %}
-
     <div class="row content">
         {% block body %}{% endblock %}
     </div>
@@ -58,7 +49,7 @@
 
 </div>
 
-{%  if mode_dev() %}
+{% if mode_dev() %}
     <div class="alert alert-danger">
         Mode : Serveur de test
     </div>
@@ -66,8 +57,16 @@
 
 <footer class="footer">
     <div class="container">
-        <p class="text-muted"> Version : {{ version }} - (c) <a target="_blank" href="https://github.com/jcognet/inscription">Jérôme</a> - 2017 => {{ "now"|date('Y') }}</p>
+        <p class="text-muted"> Version : {{ version }} - (c) <a target="_blank"
+                                                                href="https://github.com/jcognet/inscription">Jérôme</a>
+            - 2017 => {{ "now"|date('Y') }}</p>
     </div>
 </footer>
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+<script src="{{ asset('js/jquery-3-2.1.min.js') }}"></script>
+<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/popper.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
 </body>
 </html>
