@@ -59,7 +59,12 @@
     <div class="container">
         <p class="text-muted"> Version : {{ version }} - (c) <a target="_blank"
                                                                 href="https://github.com/jcognet/inscription">Jérôme</a>
-            - 2017 => {{ "now"|date('Y') }}</p>
+            - 2017 => {{ "now"|date('Y') }}
+        -
+            {% if not app.user %}
+                <a href="{{ path('fos_user_resetting_request') }}">Mot de passe perdu</a>
+        {% endif %}
+        </p>
     </div>
 </footer>
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>

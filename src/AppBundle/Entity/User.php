@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity as UniqueEntity;
  * User
  *
  * @ORM\Table(name="user")
- * @ORM\Entity(repositoryClass="UserBundle\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity("email")
 
  */

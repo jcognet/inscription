@@ -47,7 +47,6 @@ class CommunExtension extends \Twig_Extension
      */
     public function modeDev()
     {
-        dump($this->urlDev);
         return in_array(
             $this->rs->getCurrentRequest()->getHost(),
             $this->urlDev
