@@ -64,6 +64,13 @@ class User extends BaseUser
      */
     private $demandeJustificatif = false;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="telephone", type="string", length=255)
+     */
+    private $telephone;
+
 
     /**
      * Retourne l'année du certificat médical
@@ -304,5 +311,29 @@ class User extends BaseUser
     public function getInscriptions()
     {
         return $this->inscriptions;
+    }
+
+    /**
+     * Set telephone
+     *
+     * @param string $telephone
+     *
+     * @return User
+     */
+    public function setTelephone($telephone)
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    /**
+     * Get telephone
+     *
+     * @return string
+     */
+    public function getTelephone()
+    {
+        return $this->telephone;
     }
 }
