@@ -62,14 +62,12 @@ class CommunExtension extends \Twig_Extension
     {
         $estMenuActif = false;
         // Recherche de la route courante
-        $request = $this->rs->getCurrentRequest();
+        $request = $this->rs->getMasterRequest();
         $route   = $request->get('_route');
 
         // Les routes commencent toujours par le nom du bundle (et donc de l'espace)
-        if (0 === strpos($route, $espace)) {
+        if (0 === strpos($route, $espace) || 0 === strpos($route, 'app_'.$espace)) {
             $estMenuActif = true;
-        } else {
-
         }
         return $estMenuActif;
     }

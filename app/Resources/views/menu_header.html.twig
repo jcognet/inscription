@@ -1,27 +1,42 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand" href="/">Inscription</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain"
+            aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarMain">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="ddlFonctionnement" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Fonctionnement</a>
+                <a class="nav-link dropdown-toggle" href="#" id="ddlFonctionnement" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Fonctionnement</a>
                 <div class="dropdown-menu" aria-labelledby="ddlFonctionnement">
                     <a target="_blank" class="dropdown-item" href="https://github.com/jcognet/changesous/issues">Bug</a>
-                    <a target="_blank" class="dropdown-item"  href="https://github.com/jcognet/changesous/wiki">Wiki</a>
+                    <a target="_blank" class="dropdown-item" href="https://github.com/jcognet/changesous/wiki">Wiki</a>
                     <a target="_blank" class="dropdown-item" href="https://github.com/jcognet/changesous">Github</a>
                 </div>
             </li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item {% if espace_est_actif('adherent') %}active{% endif %}"><a class="nav-link" href="{{ path('app_adherent_index') }}">Adhérents</a></li>
+            {% endif %}
             {% if app.user %}
-                <li class="nav-item"><a class="nav-link"  href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+                </li>
             {% else %}
-                <li class="nav-item"><a class="nav-link"  href="{{ path('fos_user_security_login') }}">Connexion</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_security_login') }}">Connexion</a></li>
             {% endif %}
         </ul>
-        <form class="form-inline my-2 my-md-0">
-            <input class="form-control" type="text" placeholder="Rechercher">
-        </form>
+        {% if app.user %}
+            <form class="frmSelectSaison" method="post" action="{{ path('commun_chance_saison') }}">
+                <input type="hidden" value="{{url_courant}}" id="hidRedirection" name="hidRedirection"/>
+                <select id="ddlSelectSaison" name="ddlSelectSaison">
+                    {% for saison in liste_saisons %}
+                        {% set selected = app.user and app.user.saisonCourante and saison.id == app.user.saisonCourante.id %}
+                        <option value="{{ saison.id}}"
+                                style="background-color:{{ saison.couleurFond }}; color:{{ saison.couleurPolice }}"{% if selected %} selected="selected"{% endif %}>{{ saison.annee }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        {% endif %}
     </div>
 </nav>
 

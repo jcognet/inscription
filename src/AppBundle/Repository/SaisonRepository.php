@@ -10,4 +10,15 @@ namespace AppBundle\Repository;
  */
 class SaisonRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Retourne toutes les saison
+     *
+     * @return array
+     */
+    public function listeAll(){
+        return $this->createQueryBuilder('s')
+            ->addOrderBy('s.annee')
+            ->getQuery()
+            ->getResult();
+    }
 }

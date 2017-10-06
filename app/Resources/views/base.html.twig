@@ -17,8 +17,7 @@
 
 
 {% block menu %}
-    {% embed '::menu_header.html.twig' %}
-    {% endembed %}
+   {{ render(controller('AppBundle:Commun:menuHeader', {request: app.request} )) }}
 {% endblock %}
 <div class="container-fluid">
     <div class="row">

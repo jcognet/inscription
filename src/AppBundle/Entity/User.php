@@ -73,6 +73,14 @@ class User extends BaseUser
 
 
     /**
+     * @var Saison
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Saison")
+     */
+    private $saisonCourante;
+
+
+    /**
      * Retourne l'année du certificat médical
      * @return null|int
      */
@@ -335,5 +343,29 @@ class User extends BaseUser
     public function getTelephone()
     {
         return $this->telephone;
+    }
+
+    /**
+     * Set saisonCourante
+     *
+     * @param \AppBundle\Entity\Saison $saisonCourante
+     *
+     * @return User
+     */
+    public function setSaisonCourante(\AppBundle\Entity\Saison $saisonCourante = null)
+    {
+        $this->saisonCourante = $saisonCourante;
+
+        return $this;
+    }
+
+    /**
+     * Get saisonCourante
+     *
+     * @return \AppBundle\Entity\Saison
+     */
+    public function getSaisonCourante()
+    {
+        return $this->saisonCourante;
     }
 }

@@ -25,16 +25,23 @@ class Saison
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="annee", type="datetime")
+     * @ORM\Column(name="annee", type="smallint")
      */
     private $annee;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="couleur", type="string", length=255)
+     * @ORM\Column(name="couleur_fond", type="string", length=255)
      */
-    private $couleur;
+    private $couleurFond;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="couleur_police", type="string", length=255)
+     */
+    private $couleurPolice;
 
     /**
      * @var float
@@ -67,7 +74,7 @@ class Saison
     /**
      * @var string
      *
-     * @ORM\Column(name="partFederationDirigeant", type="string", length=255)
+     * @ORM\Column(name="partFederationDirigeant", type="float")
      */
     private $partFederationDirigeant;
 
@@ -89,53 +96,8 @@ class Saison
         return $this->id;
     }
 
-    /**
-     * Set annee
-     *
-     * @param \DateTime $annee
-     *
-     * @return Saison
-     */
-    public function setAnnee($annee)
-    {
-        $this->annee = $annee;
 
-        return $this;
-    }
-
-    /**
-     * Get annee
-     *
-     * @return \DateTime
-     */
-    public function getAnnee()
-    {
-        return $this->annee;
-    }
-
-    /**
-     * Set couleur
-     *
-     * @param string $couleur
-     *
-     * @return Saison
-     */
-    public function setCouleur($couleur)
-    {
-        $this->couleur = $couleur;
-
-        return $this;
-    }
-
-    /**
-     * Get couleur
-     *
-     * @return string
-     */
-    public function getCouleur()
-    {
-        return $this->couleur;
-    }
+    
 
     /**
      * Set prixCotisationAdulte
@@ -233,30 +195,7 @@ class Saison
         return $this->partFederationAdulte;
     }
 
-    /**
-     * Set partFederationDirigeant
-     *
-     * @param string $partFederationDirigeant
-     *
-     * @return Saison
-     */
-    public function setPartFederationDirigeant($partFederationDirigeant)
-    {
-        $this->partFederationDirigeant = $partFederationDirigeant;
-
-        return $this;
-    }
-
-    /**
-     * Get partFederationDirigeant
-     *
-     * @return string
-     */
-    public function getPartFederationDirigeant()
-    {
-        return $this->partFederationDirigeant;
-    }
-
+   
     /**
      * Set prixCotisationAdolescent
      *
@@ -319,5 +258,101 @@ class Saison
             }
         }
         return $cotisation;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \int $annee
+     *
+     * @return Saison
+     */
+    public function setAnnee( $annee)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \int
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
+    }
+
+    /**
+     * Set partFederationDirigeant
+     *
+     * @param float $partFederationDirigeant
+     *
+     * @return Saison
+     */
+    public function setPartFederationDirigeant($partFederationDirigeant)
+    {
+        $this->partFederationDirigeant = $partFederationDirigeant;
+
+        return $this;
+    }
+
+    /**
+     * Get partFederationDirigeant
+     *
+     * @return float
+     */
+    public function getPartFederationDirigeant()
+    {
+        return $this->partFederationDirigeant;
+    }
+
+    /**
+     * Set couleurFond
+     *
+     * @param string $couleurFond
+     *
+     * @return Saison
+     */
+    public function setCouleurFond($couleurFond)
+    {
+        $this->couleurFond = $couleurFond;
+
+        return $this;
+    }
+
+    /**
+     * Get couleurFond
+     *
+     * @return string
+     */
+    public function getCouleurFond()
+    {
+        return $this->couleurFond;
+    }
+
+    /**
+     * Set couleurPolice
+     *
+     * @param string $couleurPolice
+     *
+     * @return Saison
+     */
+    public function setCouleurPolice($couleurPolice)
+    {
+        $this->couleurPolice = $couleurPolice;
+
+        return $this;
+    }
+
+    /**
+     * Get couleurPolice
+     *
+     * @return string
+     */
+    public function getCouleurPolice()
+    {
+        return $this->couleurPolice;
     }
 }
