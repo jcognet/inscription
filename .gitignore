@@ -88,6 +88,8 @@ fabric.properties
 # Build data
 /build/
 
+/data/
+
 # Backup entities generated with doctrine:generate:entities command
 **/Entity/*~
 
