@@ -1,0 +1,18 @@
+.ajax {
+    opacity: 0.5;
+}
+
+#loader_ajax {
+    visibility: hidden;
+}
+
+.loader {
+    position: absolute;
+    z-index: 400;
+    opacity: 1;
+}
+
+
+.navbar {
+    margin-bottom: 20px;
+}
