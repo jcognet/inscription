@@ -71,6 +71,12 @@ class Inscription
     private $user;
 
     /**
+     * @var ArrayCollection
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Saison", inversedBy="inscriptions")
+     */
+    private $saison;
+
+    /**
      * @var CertificatMedical
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\CertificatMedical", inversedBy="inscription")
      */
@@ -284,5 +290,29 @@ class Inscription
     public function getPersonneContact()
     {
         return $this->personneContact;
+    }
+
+    /**
+     * Set saison
+     *
+     * @param \AppBundle\Entity\Saison $saison
+     *
+     * @return Inscription
+     */
+    public function setSaison(\AppBundle\Entity\Saison $saison = null)
+    {
+        $this->saison = $saison;
+
+        return $this;
+    }
+
+    /**
+     * Get saison
+     *
+     * @return \AppBundle\Entity\Saison
+     */
+    public function getSaison()
+    {
+        return $this->saison;
     }
 }

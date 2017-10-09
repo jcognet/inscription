@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use function Couchbase\defaultDecoder;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -84,6 +85,12 @@ class Saison
      * @ORM\Column(name="prixCotisationAdolescent", type="float")
      */
     private $prixCotisationAdolescent;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Inscription", mappedBy="saison")
+     */
+    private $inscriptions;
 
 
     /**
@@ -354,5 +361,46 @@ class Saison
     public function getCouleurPolice()
     {
         return $this->couleurPolice;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->inscriptions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add inscription
+     *
+     * @param \AppBundle\Entity\Inscription $inscription
+     *
+     * @return Saison
+     */
+    public function addInscription(\AppBundle\Entity\Inscription $inscription)
+    {
+        $this->inscriptions[] = $inscription;
+
+        return $this;
+    }
+
+    /**
+     * Remove inscription
+     *
+     * @param \AppBundle\Entity\Inscription $inscription
+     */
+    public function removeInscription(\AppBundle\Entity\Inscription $inscription)
+    {
+        $this->inscriptions->removeElement($inscription);
+    }
+
+    /**
+     * Get inscriptions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInscriptions()
+    {
+        return $this->inscriptions;
     }
 }

@@ -79,6 +79,22 @@ class User extends BaseUser
      */
     private $saisonCourante;
 
+    /**
+     * Retourne l'inscription d'une année donnée
+     * @param Saison $saison
+     * @return mixed|null
+     */
+    public function getInscriptionDeSaison(Saison $saison){
+        $inscription = null;
+        foreach($this->inscriptions as $i){
+            if($i->getAnnee() === $saison->getAnnee()){
+                $inscription = $i;
+                break;
+            }
+        }
+        return $inscription;
+    }
+
 
     /**
      * Retourne l'année du certificat médical
@@ -88,7 +104,7 @@ class User extends BaseUser
     {
         $annee = null;
         /**@var \AppBundle\Entity\Inscription $derniereInscription * */
-        $derniereInscription = $this->getDernereInscription();
+        $derniereInscription = $this->getDerniereInscription();
         if (false === is_null($derniereInscription)) {
             $annee = $derniereInscription->getDateTraitementDossier()->format('Y');
         }
@@ -367,5 +383,11 @@ class User extends BaseUser
     public function getSaisonCourante()
     {
         return $this->saisonCourante;
+    }
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->inscriptions = new ArrayCollection();
     }
 }
