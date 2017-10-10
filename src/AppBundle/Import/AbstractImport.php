@@ -5,6 +5,7 @@ namespace AppBundle\Import;
 
 use AppBundle\Entity\Adresse;
 use AppBundle\Entity\Inscription;
+use AppBundle\Entity\PersonneContact;
 use AppBundle\Entity\Saison;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -30,7 +31,7 @@ abstract class AbstractImport
     const PROP_DATE_NAISSANCE = "date_naissance";
     const PROP_TYPE_COURS     = 'type_cours';
     const PROP_SEXE           = "sexe";
-    const PROP_TYPE_LICENCE   = "licence";
+    const PROP_TYPE_LICENCE   = "type_licence";
 
 
     /**
@@ -38,6 +39,24 @@ abstract class AbstractImport
      * @return array
      */
     abstract protected function listeConversionColonne();
+
+    /**
+     * Convertit le sexe lu du fichier CSV
+     * @return mixed
+     */
+    abstract protected function convertitSexe($sexe);
+
+    /**
+     * Convertit le type de cours
+     * @return mixed
+     */
+    abstract protected function convertitTypeCours($type);
+
+    /**
+     * Convertit le type de licence
+     * @return mixed
+     */
+    abstract protected function convertitTypeLicence($type);
 
     /**
      * Liste des conversions de colonne
@@ -71,6 +90,11 @@ abstract class AbstractImport
      */
     protected $logger;
 
+    /**
+     * @var Saison
+     */
+    protected $saison;
+
     public function __construct(EntityManager $em, Filesystem $fs, string $repertoireDonnees, Serializer $serializer, LoggerInterface $logger)
     {
         $this->em                = $em;
@@ -85,11 +109,12 @@ abstract class AbstractImport
     public function importeDonnees(int $annee)
     {
         $this->checkFile($annee);
+        $this->prepareImport($annee);
         $donnees                      = $this->litFichier($annee);
         $this->listeConversionColonne = $this->listeConversionColonne();
         $donneesConvertie             = $this->convertitDonnees($donnees);
         $listeEntite                  = $this->convertitEnEntites($donneesConvertie);
-        dump($listeEntite);
+        $this->em->flush();
     }
 
     /**
@@ -102,6 +127,15 @@ abstract class AbstractImport
         if (false === $this->fs->exists($this->getFilePath($annee))) {
             throw new \Exception("Fichier inconnu : " . $this->getFilePath($annee));
         }
+    }
+
+    /**
+     * Prépare l'import
+     * @param int $annee
+     */
+    protected function prepareImport(int $annee)
+    {
+        $this->saison = $this->em->getRepository(Saison::class)->findOneBy(array('annee' => $annee));
     }
 
     /**
@@ -141,9 +175,8 @@ abstract class AbstractImport
     protected function convertitDonnees(array $donnees)
     {
         $outDonneesClean = array();
-        $this->logger->debug("Nombre de lignes dans le fichier Excel : " . count($donnees));
-        $iPos        = 0;
-        $listColonne = $this->listeConversionColonneInverse();
+        $iPos            = 0;
+        $listColonne     = $this->listeConversionColonneInverse();
         foreach ($donnees as $adherent) {
             $this->logger->debug("Analyse de la ligne : " . $iPos);
             $iCol             = 0;
@@ -168,20 +201,32 @@ abstract class AbstractImport
     protected function convertitEnEntites($donnees)
     {
         $listeAdherentConvertit = array();
-        $saison                 = new Saison(); //TODO : la récupérer en base si elle existe, la tranformer en propriété du service
         foreach ($donnees as $adherent) {
-            $user = new User();// TODO : récupérer un utilisateur à partir de son prénom, nom
+            // La date de naissnce est unique \o/
+            $dateNaissance = \DateTime::createFromFormat('j/m/Y', $adherent[self::PROP_DATE_NAISSANCE])->setTime(0, 0, 0);
+            $user          = $this->em->getRepository(User::class)->findOneBy(array(
+                'dateNaissance' =>$dateNaissance
+            ));
+            if(true === is_null($user)){
+                $user = new User();
+            }
             //  Création de l'adresse si elle n'existe pas
             if (true === is_null($user->getAdresse())) {
                 $adresse = new Adresse();
                 $user->setAdresse($adresse);
             }
             // Gestion de l'inscription
-            if( true === is_null($user->getInscriptionDeSaison($saison))){
+            if (true === is_null($user->getInscriptionDeSaison($this->saison))) {
                 $inscription = new Inscription();
                 $inscription->setUser($user)
-                    ->setSaison($saison);
+                    ->setSaison($this->saison);
                 $user->addInscription($inscription);
+            }
+            // Gestion de la personne ugence
+            if (true === is_null($user->getInscriptionDeSaison($this->saison)->getPersonneContact())) {
+                $personne = new PersonneContact();
+                $personne->setInscription($user->getInscriptionDeSaison($this->saison));
+                $user->getInscriptionDeSaison($this->saison)->setPersonneContact($personne);
             }
 
             // Aller, on mappe maintenant
@@ -207,6 +252,30 @@ abstract class AbstractImport
                         break;
                     case self::PROP_VILLE:
                         $user->getAdresse()->setVille($valeur);
+                        break;
+                    case self::PROP_NUMERO_LICENCE:
+                        $user->setNumeroFederal($valeur);
+                        break;
+                    case self::PROP_PRENOM_URGENCE:
+                        $user->getInscriptionDeSaison($this->saison)->getPersonneContact()->setPrenom($valeur);
+                        break;
+                    case self::PROP_NOM_URGENCE:
+                        $user->getInscriptionDeSaison($this->saison)->getPersonneContact()->setNom($valeur);
+                        break;
+                    case self::PROP_TEL_URGENCE:
+                        $user->getInscriptionDeSaison($this->saison)->getPersonneContact()->setTelephone($valeur);
+                        break;
+                    case self::PROP_DATE_NAISSANCE:
+                        $user->setDateNaissance($dateNaissance);
+                        break;
+                    case self::PROP_SEXE:
+                        $user->setSexe($this->convertitSexe($valeur));
+                        break;
+                    case self::PROP_TYPE_LICENCE:
+                        $user->getInscriptionDeSaison($this->saison)->setTypeAdhesion($this->convertitTypeLicence($valeur));
+                        break;
+                    case self::PROP_TYPE_COURS:
+                        $user->getInscriptionDeSaison($this->saison)->setTypeCours($this->convertitTypeCours($valeur));
                         break;
                 }
             }

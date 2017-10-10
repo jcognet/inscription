@@ -16,6 +16,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity as UniqueEntity;
  */
 class User extends BaseUser
 {
+    const SEXE_MASCULE = 'M';
+    const SEXE_FEMININ = 'F';
+    
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -53,9 +56,23 @@ class User extends BaseUser
     /**
      * @var string
      *
+     * @ORM\Column(name="date_naissance", type="datetime")
+     */
+    private $dateNaissance;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="numero_federal", type="string", length=255)
      */
     private $numeroFederal;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sexe", type="string", length=1)
+     */
+    private $sexe;
 
     /**
      * @var string
@@ -82,12 +99,12 @@ class User extends BaseUser
     /**
      * Retourne l'inscription d'une année donnée
      * @param Saison $saison
-     * @return mixed|null
+     * @return Inscription|null
      */
     public function getInscriptionDeSaison(Saison $saison){
         $inscription = null;
         foreach($this->inscriptions as $i){
-            if($i->getAnnee() === $saison->getAnnee()){
+            if($i->getSaison()->getAnnee() === $saison->getAnnee()){
                 $inscription = $i;
                 break;
             }
@@ -389,5 +406,53 @@ class User extends BaseUser
     {
         parent::__construct();
         $this->inscriptions = new ArrayCollection();
+    }
+
+    /**
+     * Set dateNaissance
+     *
+     * @param \DateTime $dateNaissance
+     *
+     * @return User
+     */
+    public function setDateNaissance($dateNaissance)
+    {
+        $this->dateNaissance = $dateNaissance;
+
+        return $this;
+    }
+
+    /**
+     * Get dateNaissance
+     *
+     * @return \DateTime
+     */
+    public function getDateNaissance()
+    {
+        return $this->dateNaissance;
+    }
+
+    /**
+     * Set sexe
+     *
+     * @param string $sexe
+     *
+     * @return User
+     */
+    public function setSexe($sexe)
+    {
+        $this->sexe = $sexe;
+
+        return $this;
+    }
+
+    /**
+     * Get sexe
+     *
+     * @return string
+     */
+    public function getSexe()
+    {
+        return $this->sexe;
     }
 }

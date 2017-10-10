@@ -19,6 +19,7 @@ class Inscription
     const TYPE_ADEHSION_ADULTE    = 'adulte';
     const TYPE_ADEHSION_ENFANT    = 'enfant';
     const TYPE_ADEHSION_DIRIGEANT = 'dirigeant';
+    const TYPE_ADEHSION_AILLEURS= 'ailleurs';
 
     /**
      * @var int
