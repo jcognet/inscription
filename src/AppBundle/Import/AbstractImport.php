@@ -106,7 +106,12 @@ abstract class AbstractImport
         $this->logger     = $logger;
     }
 
-    public function importeDonnees(int $annee)
+    /**
+     * Importer les données
+     * @param int $annee
+     * @param bool $updateDatabase
+     */
+    public function importeDonnees(int $annee, $updateDatabase = true)
     {
         $this->checkFile($annee);
         $this->prepareImport($annee);
@@ -114,7 +119,11 @@ abstract class AbstractImport
         $this->listeConversionColonne = $this->listeConversionColonne();
         $donneesConvertie             = $this->convertitDonnees($donnees);
         $listeEntite                  = $this->convertitEnEntites($donneesConvertie);
-        $this->em->flush();
+        if($updateDatabase) {
+            $this->logger->debug('Mise à jour de la BDD');
+            $this->em->flush();
+        }
+        $this->checkImport($donneesConvertie);
     }
 
     /**
@@ -178,7 +187,6 @@ abstract class AbstractImport
         $iPos            = 0;
         $listColonne     = $this->listeConversionColonneInverse();
         foreach ($donnees as $adherent) {
-            $this->logger->debug("Analyse de la ligne : " . $iPos);
             $iCol             = 0;
             $donneesConvertie = array();
             foreach ($adherent as $col => $donnee) {
@@ -204,10 +212,11 @@ abstract class AbstractImport
         foreach ($donnees as $adherent) {
             // La date de naissnce est unique \o/
             $dateNaissance = \DateTime::createFromFormat('j/m/Y', $adherent[self::PROP_DATE_NAISSANCE])->setTime(0, 0, 0);
-            $user          = $this->em->getRepository(User::class)->findOneBy(array(
-                'dateNaissance' =>$dateNaissance
-            ));
-            if(true === is_null($user)){
+            $user          = $this->em->getRepository(User::class)->findOneByEmail($adherent[self::PROP_EMAIL]);
+            if (0 === strlen($adherent[self::PROP_EMAIL])) {
+                continue;
+            }
+            if (true === is_null($user)) {
                 $user = new User();
             }
             //  Création de l'adresse si elle n'existe pas
@@ -223,6 +232,7 @@ abstract class AbstractImport
                 $user->addInscription($inscription);
             }
             // Gestion de la personne ugence
+
             if (true === is_null($user->getInscriptionDeSaison($this->saison)->getPersonneContact())) {
                 $personne = new PersonneContact();
                 $personne->setInscription($user->getInscriptionDeSaison($this->saison));
@@ -280,7 +290,29 @@ abstract class AbstractImport
                 }
             }
             $listeAdherentConvertit[] = $user;
+            $this->em->persist($user);
+            $this->em->persist($user->getAdresse());
+            $this->em->persist($user->getInscriptionDeSaison($this->saison)->getPersonneContact());
+            $this->em->persist($user->getInscriptionDeSaison($this->saison));
         }
         return $listeAdherentConvertit;
+    }
+
+    /**
+     * Vérifie si l'import est ok
+     * @param array $donnees
+     */
+    protected function checkImport(array $donnees)
+    {
+        foreach ($donnees as $adherent) {
+            if (0 === strlen($adherent[self::PROP_EMAIL])) {
+                $this->logger->error("Pas de email pour : " . implode(',', $adherent));
+            } else {
+                $user = $this->em->getRepository(User::class)->findOneByEmail($adherent[self::PROP_EMAIL]);
+                if (true === is_null($user)) {
+                    $this->logger->error("Problème avec l'adhérent : " . $user);
+                }
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity as UniqueEntity;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity("email")
+ * @ORM\HasLifecycleCallbacks()
  */
 class User extends BaseUser
 {
@@ -454,5 +455,25 @@ class User extends BaseUser
     public function getSexe()
     {
         return $this->sexe;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setFosValuePrePersist()
+    {
+        $this
+            ->setUsername($this->getEmail())
+            ->setEnabled(false)
+            ->setPassword('');
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function setFosValuePreUpdate()
+    {
+        $this
+            ->setUsername($this->getEmail());
     }
 }

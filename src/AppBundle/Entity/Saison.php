@@ -403,4 +403,5 @@ class Saison
     {
         return $this->inscriptions;
     }
+
 }

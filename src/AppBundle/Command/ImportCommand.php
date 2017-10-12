@@ -5,6 +5,7 @@ namespace AppBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ImportCommand extends ContainerAwareCommand
@@ -16,6 +17,7 @@ class ImportCommand extends ContainerAwareCommand
         $this
             ->setName('import:adherent')
             ->addArgument('annee', InputArgument::REQUIRED, "Année de l'import des membres")
+            ->addOption('updatedatabase','u' , InputOption::VALUE_NONE, 'met à jour la base de donnée')
             ->setDescription("Import des adhérents");
     }
 
@@ -23,7 +25,7 @@ class ImportCommand extends ContainerAwareCommand
     {
         $annee = $input->getArgument('annee');
         $output->writeln("Commande d'import des adhérents ".$annee);
-        $this->getContainer()->get('AppBundle\Import\Import'.$annee)->importeDonnees($annee);
+        $this->getContainer()->get('AppBundle\Import\Import'.$annee)->importeDonnees($annee, $input->getOption('updatedatabase'));
     }
 
 

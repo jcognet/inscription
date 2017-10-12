@@ -24,4 +24,20 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getScalarResult();
         return reset($nbUserArray)['nb'];
     }
+
+
+    /**
+     * Retroune un user par sa date de naissance
+     * @param \DateTime $naissance
+     * @return mixed
+     */
+    public function findOneByDateNaissance(\DateTime $naissance){
+        return $this->createQueryBuilder('u')
+            ->where('YEAR(u.dateNaissance) = :annee AND MONTH(u.dateNaissance) = :mois AND DAY(u.dateNaissance) = :jour')
+            ->setParameter('annee', $naissance->format('Y'))
+            ->setParameter('mois', $naissance->format('m'))
+            ->setParameter('jour', $naissance->format('d'))
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

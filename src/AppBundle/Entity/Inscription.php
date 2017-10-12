@@ -33,14 +33,14 @@ class Inscription
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateReceptionDossier", type="datetime")
+     * @ORM\Column(name="dateReceptionDossier", type="datetime", nullable=true)
      */
     private $dateReceptionDossier;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateTraitementDossier", type="datetime")
+     * @ORM\Column(name="dateTraitementDossier", type="datetime", nullable=true)
      */
     private $dateTraitementDossier;
 
