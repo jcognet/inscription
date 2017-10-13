@@ -19,6 +19,7 @@ class AdherentController extends Controller
      */
     public function indexAction()
     {
+//        $listAdhere =$this->getDoctrine()->getRepository('AppBundle:User')->findBy(array(), )
         return $this->render('AppBundle:Adherent:index.html.twig', array(
             // ...
         ));
