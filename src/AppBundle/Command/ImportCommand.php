@@ -25,6 +25,7 @@ class ImportCommand extends ContainerAwareCommand
     {
         $annee = $input->getArgument('annee');
         $output->writeln("Commande d'import des adhérents ".$annee);
+        $output->writeln("Enregistrement en base : ".$input->getOption('updatedatabase'));
         $this->getContainer()->get('AppBundle\Import\Import'.$annee)->importeDonnees($annee, $input->getOption('updatedatabase'));
     }
 

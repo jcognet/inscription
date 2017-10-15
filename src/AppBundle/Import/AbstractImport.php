@@ -119,11 +119,12 @@ abstract class AbstractImport
         $this->listeConversionColonne = $this->listeConversionColonne();
         $donneesConvertie             = $this->convertitDonnees($donnees);
         $listeEntite                  = $this->convertitEnEntites($donneesConvertie);
+        dump($updateDatabase);
         if($updateDatabase) {
             $this->logger->debug('Mise à jour de la BDD');
             $this->em->flush();
         }
-        $this->checkImport($donneesConvertie);
+        $this->checkImport($donneesConvertie, $updateDatabase);
     }
 
     /**
@@ -187,6 +188,7 @@ abstract class AbstractImport
         $iPos            = 0;
         $listColonne     = $this->listeConversionColonneInverse();
         foreach ($donnees as $adherent) {
+            $this->logger->debug("Conversion de la ligne ".$iPos." avec les données : ".implode(', ', $adherent));
             $iCol             = 0;
             $donneesConvertie = array();
             foreach ($adherent as $col => $donnee) {
@@ -195,6 +197,7 @@ abstract class AbstractImport
                 }
                 $iCol++;
             }
+               $this->logger->debug("Fin de la conversion de la ligne ".$iPos." qui a donné : ".implode(', ', array_keys($donneesConvertie)) . "et valeur : ".implode(', ', $donneesConvertie) );
             $outDonneesClean[] = $donneesConvertie;
             $iPos++;
         }
@@ -301,13 +304,14 @@ abstract class AbstractImport
     /**
      * Vérifie si l'import est ok
      * @param array $donnees
+     * @param bool $updateDatabase
      */
-    protected function checkImport(array $donnees)
+    protected function checkImport(array $donnees, bool $updateDatabase)
     {
         foreach ($donnees as $adherent) {
             if (0 === strlen($adherent[self::PROP_EMAIL])) {
                 $this->logger->error("Pas de email pour : " . implode(',', $adherent));
-            } else {
+            } elseif($updateDatabase) {
                 $user = $this->em->getRepository(User::class)->findOneByEmail($adherent[self::PROP_EMAIL]);
                 if (true === is_null($user)) {
                     $this->logger->error("Problème avec l'adhérent : " . $user);

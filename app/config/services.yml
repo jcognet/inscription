@@ -38,10 +38,10 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    AppBundle\Service\:
-      resource: '../../src/AppBundle/Service'
-      public: true
-      autowire: false
+#    AppBundle\Service\:
+#      resource: '../../src/AppBundle/Service'
+#      public: true
+#      autowire: false
 
     AppBundle\Import\AbstractImport:
           arguments: ["@doctrine.orm.default_entity_manager", "@filesystem", "%kernel.project_dir%/data", "@serializer" ,"@logger"]
