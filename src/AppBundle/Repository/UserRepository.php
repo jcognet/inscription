@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Saison;
+
 /**
  * UserRepository
  *
@@ -31,7 +33,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
      * @param \DateTime $naissance
      * @return mixed
      */
-    public function findOneByDateNaissance(\DateTime $naissance){
+    public function findOneByDateNaissance(\DateTime $naissance)
+    {
         return $this->createQueryBuilder('u')
             ->where('YEAR(u.dateNaissance) = :annee AND MONTH(u.dateNaissance) = :mois AND DAY(u.dateNaissance) = :jour')
             ->setParameter('annee', $naissance->format('Y'))
@@ -39,5 +42,21 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('jour', $naissance->format('d'))
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * Retourne la reque^te pour obtenir la liste des utilisateurs
+     * @param Saison $saison
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getQueryListeUser(Saison $saison)
+    {
+        return $this->createQueryBuilder('u')
+            ->join('u.inscriptions', 'i')
+            ->where('i.saison = :saison')
+            ->setParameter('saison', $saison)
+            ->addOrderBy('u.prenom', 'ASC')
+            ->addOrderBy('u.nom', 'ASC')
+            ->getQuery();
     }
 }

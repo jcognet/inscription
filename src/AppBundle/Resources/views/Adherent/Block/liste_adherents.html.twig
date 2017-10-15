@@ -1,0 +1,55 @@
+{% import "macro/general.html.twig" as generalMacro %}
+<table class="table table-striped table-responsive fe_liste">
+    <thead>
+    <tr>
+        <th class="col-sm-1 {{ generalMacro.gereTri(liste_adherents, 'u.prenom') }}">
+            {{ knp_pagination_sortable(liste_adherents, 'Prénom', 'u.prenom') }}
+        </th>
+        <th class="col-sm-1 {{ generalMacro.gereTri(liste_adherents, 'u.nom') }}">
+            {{ knp_pagination_sortable(liste_adherents, 'Nom', 'u.nom') }}
+        </th>
+        <th class="col-sm-1">
+            Première inscription
+        </th>
+        <th class="col-sm-1">
+            Date de validation
+        </th>
+        <th class="col-sm-2">
+            Email
+        </th>
+        <th class="col-sm-2">
+            Téléphone
+        </th>
+        <th class="col-sm-1">&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for adherent in liste_adherents %}
+        <tr data-id="{{ adherent.id }}">
+            <td>
+                {{ adherent.prenom }}
+            </td>
+            <td>
+                {{ adherent.nom }}
+            </td>
+            <td>
+                {{ adherent.premiereInscription.saison.annee }}
+            </td>
+            <td>
+                TODO : injection saison
+            </td>
+            <td>
+               <a href="mailto:{{ adherent.email }}"> {{ adherent.email }}</a>
+            </td>
+            <td>
+                <a href="tel: {{ adherent.telephone }}">  {{ adherent.telephone }}</a>
+            </td>
+            <td>
+                <a href="{{ path('app_adherent_edit', {'id': adherent.id}) }}">
+                    Edit
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
