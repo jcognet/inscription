@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Inscription - {% block title %}{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
-    {% block javascripts %}{% endblock %}
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}"/>
     <link rel="stylesheet" href="{{ asset('css/main.css') }}"/>
@@ -17,7 +16,7 @@
 
 
 {% block menu %}
-   {{ render(controller('AppBundle:Commun:menuHeader', {request: app.request} )) }}
+    {{ render(controller('AppBundle:Commun:menuHeader', {request: app.request} )) }}
 {% endblock %}
 <div class="container-fluid">
     <div class="row">
@@ -39,7 +38,7 @@
             </div>
         {% endfor %}
     </div>
-    <div class="row content">
+    <div class="content">
         {% block body %}{% endblock %}
     </div>
     <div id="loader_ajax">
@@ -59,10 +58,10 @@
         <p class="text-muted"> Version : {{ version }} - (c) <a target="_blank"
                                                                 href="https://github.com/jcognet/inscription">Jérôme</a>
             - 2017 => {{ "now"|date('Y') }}
-        -
+            -
             {% if not app.user %}
                 <a href="{{ path('fos_user_resetting_request') }}">Mot de passe perdu</a>
-        {% endif %}
+            {% endif %}
         </p>
     </div>
 </footer>
@@ -72,5 +71,6 @@
 <script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('js/popper.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+{% block javascripts %}{% endblock %}
 </body>
 </html>

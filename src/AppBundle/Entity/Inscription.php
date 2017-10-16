@@ -16,10 +16,14 @@ class Inscription
     const TYPE_COURS_ADULTE = 'adulte';
     const TYPE_COURS_ENFANT = 'enfant';
 
+    const LISTE_TYPE_COURS = array(self::TYPE_COURS_ADULTE, self::TYPE_COURS_ENFANT);
+
     const TYPE_ADEHSION_ADULTE    = 'adulte';
     const TYPE_ADEHSION_ENFANT    = 'enfant';
     const TYPE_ADEHSION_DIRIGEANT = 'dirigeant';
     const TYPE_ADEHSION_AILLEURS= 'ailleurs';
+
+    const LISTE_TYPE_ADHESION = array(self::TYPE_ADEHSION_ADULTE, self::TYPE_ADEHSION_ENFANT, self::TYPE_ADEHSION_DIRIGEANT, self::TYPE_ADEHSION_AILLEURS  );
 
     /**
      * @var int

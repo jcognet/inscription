@@ -1,4 +1,7 @@
 {% import "macro/general.html.twig" as generalMacro %}
+<div>
+    Nombre d'adhérents trouvés : {{ liste_adherents|length  }}
+</div>
 <table class="table table-striped table-responsive fe_liste">
     <thead>
     <tr>
@@ -13,6 +16,15 @@
         </th>
         <th class="col-sm-1">
             Date de validation
+        </th>
+        <th class="col-sm-1">
+            Type de cours
+        </th>
+        <th class="col-sm-1">
+            Type d'adhésion
+        </th>
+        <th class="col-sm-1">
+            Date du dernier certificat médical
         </th>
         <th class="col-sm-2">
             Email
@@ -36,7 +48,21 @@
                 {{ adherent.premiereInscription.saison.annee }}
             </td>
             <td>
-                TODO : injection saison
+                {% set inscription = adherent.inscriptionDeSaison(get_saison_courante())  %}
+                {% if inscription.dateTraitementDossier is not null%}
+                    {{ inscription.dateTraitementDossier|date('d/m/Y')}}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                {{ get_label_type_cours(adherent.inscriptionDeSaison(get_saison_courante()).typeCours)}}
+            </td>
+            <td>
+                {{ get_label_type_adhesion(adherent.inscriptionDeSaison(get_saison_courante()).typeAdhesion) }}
+            </td>
+            <td>
+                {{ adherent.anneeDerniereCertificatMedical }}
             </td>
             <td>
                <a href="mailto:{{ adherent.email }}"> {{ adherent.email }}</a>

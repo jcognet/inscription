@@ -5,7 +5,7 @@ namespace AppBundle\Import;
 
 use AppBundle\Entity\User;
 
-class Import2016 extends AbstractImport
+class Import2015 extends AbstractImport
 {
     /**
      * @inheritdoc
@@ -36,7 +36,7 @@ class Import2016 extends AbstractImport
             self::PROP_PRENOM_URGENCE => 11,
             self::PROP_TEL_URGENCE    => 12,
             self::PROP_DATE_NAISSANCE => 13,
-            self::PROP_SEXE           => 19,
+            self::PROP_SEXE           => 18,
             self::PROP_TYPE_LICENCE   => 20,
             self::PROP_TYPE_COURS     => 17
         );

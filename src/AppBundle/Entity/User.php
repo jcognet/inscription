@@ -17,7 +17,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity as UniqueEntity;
  */
 class User extends BaseUser
 {
-    const SEXE_MASCULE = 'M';
+    const SEXE_MASCULIN = 'H';
     const SEXE_FEMININ = 'F';
     
     /**
@@ -124,7 +124,7 @@ class User extends BaseUser
         /**@var \AppBundle\Entity\Inscription $derniereInscription * */
         $derniereInscription = $this->getDerniereInscription();
         if (false === is_null($derniereInscription)) {
-            $annee = $derniereInscription->getDateTraitementDossier()->format('Y');
+            $annee = $derniereInscription->getSaison()->getAnnee();
         }
         return $annee;
     }

@@ -3,7 +3,9 @@
 namespace AppBundle\Twig;
 
 
+use AppBundle\Entity\Saison;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class CommunExtension extends \Twig_Extension
 {
@@ -20,16 +22,20 @@ class CommunExtension extends \Twig_Extension
      */
     private $urlDev = array();
 
+    private $tokenStorage = null;
+
 
     /**
      * CommunExtension constructor.
      * @param RequestStack $rs
      * @param $urlDev
+     * @param TokenStorage $tokenStorage
      */
-    public function __construct(RequestStack $rs,  $urlDev)
+    public function __construct(RequestStack $rs,  $urlDev, TokenStorage $tokenStorage)
     {
         $this->rs     = $rs;
         $this->urlDev = $urlDev;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function getFunctions()
@@ -38,6 +44,9 @@ class CommunExtension extends \Twig_Extension
             new \Twig_SimpleFunction('mode_dev', array($this, 'modeDev')),
             new \Twig_SimpleFunction('espace_est_actif', array($this, 'espaceEstActif')),
             new \Twig_SimpleFunction('page_est_actif', array($this, 'pageEstActif')),
+            new \Twig_SimpleFunction('get_saison_courante', array($this, 'getSaisonCourante')),
+            new \Twig_SimpleFunction('get_label_type_cours', array($this, 'getLabelTypeCours')),
+            new \Twig_SimpleFunction('get_label_type_adhesion', array($this, 'getLabelTypeAdhesion')),
         );
     }
 
@@ -85,4 +94,29 @@ class CommunExtension extends \Twig_Extension
         return $routePropose === $route;
     }
 
+    /**
+     * Retourne la saison courante
+     * @return Saison
+     */
+    public function getSaisonCourante(){
+        return $this->tokenStorage->getToken()->getUser()->getSaisonCourante();
+    }
+
+    /**
+     * Affiche le label du type de cours
+     * @param string $typeCours
+     * @return string
+     */
+    public function getLabelTypeCours(string $typeCours){
+        return ucfirst($typeCours);
+    }
+
+    /**
+     * Affiche le label du type de cours
+     * @param string $typeAdhesion
+     * @return string
+     */
+    public function getLabelTypeAdhesion(string $typeAdhesion){
+        return ucfirst($typeAdhesion);
+    }
 }

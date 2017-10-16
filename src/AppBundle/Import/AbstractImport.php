@@ -4,6 +4,7 @@ namespace AppBundle\Import;
 
 
 use AppBundle\Entity\Adresse;
+use AppBundle\Entity\CertificatMedical;
 use AppBundle\Entity\Inscription;
 use AppBundle\Entity\PersonneContact;
 use AppBundle\Entity\Saison;
@@ -15,23 +16,24 @@ use Symfony\Component\Serializer\Serializer;
 
 abstract class AbstractImport
 {
-    const PROP_PRENOM         = "prenom";
-    const PROP_NOM            = "nom";
-    const PROP_TELEPHONE      = "telephone";
-    const PROP_EMAIL          = "email";
-    const PROP_ADRESSE        = "adresse";
-    const PROP_CP             = "cp";
-    const PROP_VILLE          = "ville";
-    const PROP_NUMERO_LICENCE = "licence";
-    const PROP_COTISATION     = "cotisation";
-    const PROP_PAIEMENT       = "paiement";
-    const PROP_PRENOM_URGENCE = "prenom_urgence";
-    const PROP_NOM_URGENCE    = "nom_urgence";
-    const PROP_TEL_URGENCE    = "tel_urgence";
-    const PROP_DATE_NAISSANCE = "date_naissance";
-    const PROP_TYPE_COURS     = 'type_cours';
-    const PROP_SEXE           = "sexe";
-    const PROP_TYPE_LICENCE   = "type_licence";
+    const PROP_PRENOM              = "prenom";
+    const PROP_NOM                 = "nom";
+    const PROP_TELEPHONE           = "telephone";
+    const PROP_EMAIL               = "email";
+    const PROP_ADRESSE             = "adresse";
+    const PROP_CP                  = "cp";
+    const PROP_VILLE               = "ville";
+    const PROP_NUMERO_LICENCE      = "licence";
+    const PROP_COTISATION          = "cotisation";
+    const PROP_PAIEMENT            = "paiement";
+    const PROP_PRENOM_URGENCE      = "prenom_urgence";
+    const PROP_NOM_URGENCE         = "nom_urgence";
+    const PROP_TEL_URGENCE         = "tel_urgence";
+    const PROP_DATE_NAISSANCE      = "date_naissance";
+    const PROP_TYPE_COURS          = 'type_cours';
+    const PROP_SEXE                = "sexe";
+    const PROP_TYPE_LICENCE        = "type_licence";
+    const PROP_CERTIFICAT_MEDEICAL = "certificat_medical";
 
 
     /**
@@ -120,7 +122,7 @@ abstract class AbstractImport
         $donneesConvertie             = $this->convertitDonnees($donnees);
         $listeEntite                  = $this->convertitEnEntites($donneesConvertie);
         dump($updateDatabase);
-        if($updateDatabase) {
+        if ($updateDatabase) {
             $this->logger->debug('Mise à jour de la BDD');
             $this->em->flush();
         }
@@ -188,7 +190,7 @@ abstract class AbstractImport
         $iPos            = 0;
         $listColonne     = $this->listeConversionColonneInverse();
         foreach ($donnees as $adherent) {
-            $this->logger->debug("Conversion de la ligne ".$iPos." avec les données : ".implode(', ', $adherent));
+            $this->logger->debug("Conversion de la ligne " . $iPos . " avec les données : " . implode(', ', $adherent));
             $iCol             = 0;
             $donneesConvertie = array();
             foreach ($adherent as $col => $donnee) {
@@ -197,7 +199,7 @@ abstract class AbstractImport
                 }
                 $iCol++;
             }
-               $this->logger->debug("Fin de la conversion de la ligne ".$iPos." qui a donné : ".implode(', ', array_keys($donneesConvertie)) . "et valeur : ".implode(', ', $donneesConvertie) );
+            $this->logger->debug("Fin de la conversion de la ligne " . $iPos . " qui a donné : " . implode(', ', array_keys($donneesConvertie)) . "et valeur : " . implode(', ', $donneesConvertie));
             $outDonneesClean[] = $donneesConvertie;
             $iPos++;
         }
@@ -221,6 +223,7 @@ abstract class AbstractImport
             }
             if (true === is_null($user)) {
                 $user = new User();
+                $user->setSaisonCourante($this->saison);
             }
             //  Création de l'adresse si elle n'existe pas
             if (true === is_null($user->getAdresse())) {
@@ -290,12 +293,36 @@ abstract class AbstractImport
                     case self::PROP_TYPE_COURS:
                         $user->getInscriptionDeSaison($this->saison)->setTypeCours($this->convertitTypeCours($valeur));
                         break;
+                    case self::PROP_CERTIFICAT_MEDEICAL:
+                        if ($valeur == $this->saison->getAnnee()) {
+                            $certif = $user->getInscriptionDeSaison($this->saison)->getCertificatMedical();
+                            if (true === is_null($certif)) {
+                                $certif = new CertificatMedical();
+                                $certif->setInscription($user->getInscriptionDeSaison($this->saison));
+                                $user->getInscriptionDeSaison($this->saison)->setCertificatMedical($certif);
+                            }
+                            $certif
+                                ->setDateEmission(\DateTime::createFromFormat('j/m/Y', '01/09/' . $this->saison->getAnnee())->setTime(0, 0, 0))
+                                ->setDateAjout(new \DateTime());
+                            $this->em->persist($certif);
+                        }
+                        break;
                 }
             }
             $listeAdherentConvertit[] = $user;
             $this->em->persist($user);
             $this->em->persist($user->getAdresse());
             $this->em->persist($user->getInscriptionDeSaison($this->saison)->getPersonneContact());
+            // Ajout du certificat médical si nécessaire
+            if (false === array_key_exists(self::PROP_CERTIFICAT_MEDEICAL, $adherent)) {
+                $certif = new CertificatMedical();
+                $certif->setInscription($user->getInscriptionDeSaison($this->saison))
+                    ->setDateEmission(\DateTime::createFromFormat('j/m/Y', '01/09/' . $this->saison->getAnnee())->setTime(0, 0, 0))
+                    ->setDateAjout(new \DateTime());
+                $user->getInscriptionDeSaison($this->saison)->setCertificatMedical($certif);
+                $this->em->persist($certif);
+            }
+
             $this->em->persist($user->getInscriptionDeSaison($this->saison));
         }
         return $listeAdherentConvertit;
@@ -311,7 +338,7 @@ abstract class AbstractImport
         foreach ($donnees as $adherent) {
             if (0 === strlen($adherent[self::PROP_EMAIL])) {
                 $this->logger->error("Pas de email pour : " . implode(',', $adherent));
-            } elseif($updateDatabase) {
+            } elseif ($updateDatabase) {
                 $user = $this->em->getRepository(User::class)->findOneByEmail($adherent[self::PROP_EMAIL]);
                 if (true === is_null($user)) {
                     $this->logger->error("Problème avec l'adhérent : " . $user);

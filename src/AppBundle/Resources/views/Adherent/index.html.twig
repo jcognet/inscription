@@ -1,20 +1,43 @@
 {% extends "::base.html.twig" %}
 
 {% block header %}
-    Liste des adhérents de la saison @@TODO@@
+    Liste des adhérents de la saison  {{ get_saison_courante().annee }}
 {% endblock header %}
 
-{% block title %} Liste des adhérents de la saison @@TODO@@{% endblock %}
+{% block title %} Liste des adhérents de la saison {{ get_saison_courante().annee }}{% endblock %}
 {% block body %}
 
-    <div class="sm-12">
+    <div class="row btn_open_close">
         <h2>Moteur de recherche</h2>
-        {{ form(form) }}
     </div>
-    <hr/>
-    <div class="sm-12">
+    {{ form_start(form, {attr: {id: 'formRechercheAdherent'} }) }}
+    <div class="row div_open_close {% if true or app.request.method == 'POST' %} visible{% endif %}">
+
+
+        <div class="col-sm-2">
+            {{ form_row(form.text) }}
+        </div>
+        <div class="col-sm-2">
+            {{ form_row(form.typeCours) }}
+        </div>
+        <div class="col-sm-2">
+            {{ form_row(form.typeAdhesion) }}
+        </div>
+        <div class="col-sm-2">
+            <br/>
+            <button type="submit" class="btn btn-primary" id="btnRechercherAdherent">Rechercher</button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+    <div class="row">
         <h2>Liste des utilisateurs</h2>
+    </div>
+    <div class="row" id="divListeAdherent">
         {% embed '@App/Adherent/Block/liste_adherents.html.twig' with {liste_adherents: liste_adherents} only %}
         {% endembed %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/adherent.js') }}"></script>
 {% endblock %}

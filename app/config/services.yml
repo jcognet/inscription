@@ -24,7 +24,7 @@ services:
 
     # Twig extension
     AppBundle\Twig\CommunExtension:
-          arguments: ["@request_stack", "%url_dev%"]
+          arguments: ["@request_stack", "%url_dev%", "@security.token_storage"]
           class: AppBundle\Twig\CommunExtension
           tags:
               - { name: twig.extension }
@@ -49,6 +49,18 @@ services:
           abstract: true
 
     AppBundle\Import\Import2016:
+          parent: AppBundle\Import\AbstractImport
+          public: true
+          autowire: false
+          autoconfigure: false
+
+    AppBundle\Import\Import2015:
+          parent: AppBundle\Import\AbstractImport
+          public: true
+          autowire: false
+          autoconfigure: false
+
+    AppBundle\Import\Import2017:
           parent: AppBundle\Import\AbstractImport
           public: true
           autowire: false

@@ -3,6 +3,7 @@ $(document).ready(function () {
     changeSort();
     alerteSiSuppression();
     changeSaison();
+    addEventOpenClose();
 });
 // Gestion des erreurs ajax
 $( document ).ajaxError(function( event, request, settings ) {
@@ -47,9 +48,63 @@ function alerteSiSuppression(){
         });
     });
 }
+// Gère le changement de saison dans l'application
 function changeSaison(){
     $("#ddlSelectSaison").on("change", function(){
         var form =$("#ddlSelectSaison").closest('form');
         form.submit();
     });
+}
+// Gère la fermeture ouverture de zone
+function addEventOpenClose() {
+    $('.div_open_close').each(function(){
+        var that = $(this);
+        if(false == that.hasClass('visible')){
+            that.hide();
+        }
+    });
+    // Gestion du click
+    $('.btn_open_close').on('click', function(e){
+        var that = $(this);
+        var zoneOpenClose = that.parent().find('.div_open_close').first();
+        var etaitVisible = zoneOpenClose.is(':visible');
+        zoneOpenClose.slideToggle();
+        console.log(zoneOpenClose);
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    });
+}
+
+// Get parametre from url
+function getParameterByName(name, url) {
+    if (!url) {
+        url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+// Create query string for paginator
+function createQueryStringPaginatior(sort, direction, page) {
+    var queryString = "?"
+    if (!sort) {
+        sort = '';
+    } else {
+        queryString = queryString + 'sort=' + sort + '&'
+    }
+    if (!direction) {
+        direction = '';
+    } else {
+        queryString = queryString + 'direction=' + direction + '&'
+    }
+    if (!page) {
+        page = '';
+    } else {
+        queryString = queryString + 'page=' + page + '&'
+    }
+    return queryString;
 }

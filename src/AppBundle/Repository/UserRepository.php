@@ -47,16 +47,31 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Retourne la reque^te pour obtenir la liste des utilisateurs
      * @param Saison $saison
-     * @return \Doctrine\ORM\QueryBuilder
+     * @param array $listeFiltres
+     * @return \Doctrine\ORM\Query
      */
-    public function getQueryListeUser(Saison $saison)
+    public function getQueryListeUser(Saison $saison, array $listeFiltres)
     {
-        return $this->createQueryBuilder('u')
+        // Création de la requête
+        $qd = $this->createQueryBuilder('u')
             ->join('u.inscriptions', 'i')
             ->where('i.saison = :saison')
-            ->setParameter('saison', $saison)
-            ->addOrderBy('u.prenom', 'ASC')
-            ->addOrderBy('u.nom', 'ASC')
-            ->getQuery();
+            ->setParameter('saison', $saison);
+        // Mise en place du filtre
+        if (array_key_exists('text', $listeFiltres) && strlen($listeFiltres['text']) > 0) {
+            $qd->andWhere('u.prenom like :text OR u.nom like :text')
+                ->setParameter('text', '%'.$listeFiltres['text'].'%');
+        }
+        if (array_key_exists('typeAdhesion', $listeFiltres) && false === is_null($listeFiltres['typeAdhesion'])) {
+            $qd->andWhere('i.typeAdhesion = :typeAdhesion')
+                ->setParameter('typeAdhesion', $listeFiltres['typeAdhesion']);
+        }
+        if (array_key_exists('typeCours', $listeFiltres) && false === is_null($listeFiltres['typeCours'])) {
+            $qd->andWhere('i.typeCours = :typeCours')
+                ->setParameter('typeCours', $listeFiltres['typeCours']);
+        }
+        // Exécution de la requête
+        return
+            $qd->getQuery();
     }
 }
