@@ -1,8 +1,8 @@
 {% import "macro/general.html.twig" as generalMacro %}
 <div>
-    Nombre d'adhérents trouvés : {{ liste_adherents|length  }}
+    Nombre d'adhérents trouvés : {{ liste_adherents|length }}
 </div>
-<table class="table table-striped table-responsive fe_liste">
+<table class="table table-striped table-responsive fe_liste d-none d-sm-block">
     <thead>
     <tr>
         <th class="col-sm-1 {{ generalMacro.gereTri(liste_adherents, 'u.prenom') }}">
@@ -37,6 +37,7 @@
     </thead>
     <tbody>
     {% for adherent in liste_adherents %}
+        {% set inscription = adherent.inscriptionDeSaison(get_saison_courante()) %}
         <tr data-id="{{ adherent.id }}">
             <td>
                 {{ adherent.prenom }}
@@ -48,15 +49,14 @@
                 {{ adherent.premiereInscription.saison.annee }}
             </td>
             <td>
-                {% set inscription = adherent.inscriptionDeSaison(get_saison_courante())  %}
-                {% if inscription.dateTraitementDossier is not null%}
-                    {{ inscription.dateTraitementDossier|date('d/m/Y')}}
+                {% if inscription.dateTraitementDossier is not null %}
+                    {{ inscription.dateTraitementDossier|date('d/m/Y') }}
                 {% else %}
                     -
                 {% endif %}
             </td>
             <td>
-                {{ get_label_type_cours(adherent.inscriptionDeSaison(get_saison_courante()).typeCours)}}
+                {{ get_label_type_cours(adherent.inscriptionDeSaison(get_saison_courante()).typeCours) }}
             </td>
             <td>
                 {{ get_label_type_adhesion(adherent.inscriptionDeSaison(get_saison_courante()).typeAdhesion) }}
@@ -65,18 +65,51 @@
                 {{ adherent.anneeDerniereCertificatMedical }}
             </td>
             <td>
-               <a href="mailto:{{ adherent.email }}"> {{ adherent.email }}</a>
+                <a href="mailto:{{ adherent.email }}"> {{ adherent.email }}</a>
             </td>
             <td>
                 <a href="tel: {{ adherent.telephone }}">  {{ adherent.telephone }}</a>
             </td>
             <td>
-                <a  class="fa fa-hand-o-right" aria-hidden="true" title="Editer {{ adherent.prenom}} {{ adherent.nom }}" href="{{ path('app_adherent_edit', {'id': inscription.id}) }}"></a>
+                <a class="fa fa-hand-o-right" aria-hidden="true"
+                   title="Editer {{ adherent.prenom }} {{ adherent.nom }}"
+                   href="{{ path('app_adherent_edit', {'id': inscription.id}) }}"></a>
                 {% if adherent.hasEmail %}
-                    <a  class="fa fa-envelope-open-o " aria-hidden="true" title="Envoyer un email à  {{ adherent.prenom}} {{ adherent.nom }}" href="mailto: {{ adherent.email }}"></a>
+                    <a class="fa fa-envelope-open-o " aria-hidden="true"
+                       title="Envoyer un email à  {{ adherent.prenom }} {{ adherent.nom }}"
+                       href="mailto: {{ adherent.email }}"></a>
                 {% endif %}
-                {% if adherent.hasTelephone%}
-                    <a  class="fa fa-phone" aria-hidden="true" title="Téléphoner à  {{ adherent.prenom}} {{ adherent.nom }}" href="tel: {{ adherent.telephone }}"></a>
+                {% if adherent.hasTelephone %}
+                    <a class="fa fa-phone" aria-hidden="true"
+                       title="Téléphoner à  {{ adherent.prenom }} {{ adherent.nom }}"
+                       href="tel: {{ adherent.telephone }}"></a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<table class="table table-striped table-responsive fe_liste d-sm-block d-md-none d-lg-none d-xl-none">
+    <tbody>
+    {% for adherent in liste_adherents %}
+        {% set inscription = adherent.inscriptionDeSaison(get_saison_courante()) %}
+        <tr data-id="{{ adherent.id }}">
+            <td>
+                {{ adherent.prenom }} {{ adherent.nom }}
+                <a class="fa fa-hand-o-right" aria-hidden="true"
+                   title="Editer {{ adherent.prenom }} {{ adherent.nom }}"
+                   href="{{ path('app_adherent_edit', {'id': inscription.id}) }}"></a>
+                {% if adherent.hasEmail %}
+                    <a class="fa fa-envelope-open-o " aria-hidden="true"
+                       title="Envoyer un email à  {{ adherent.prenom }} {{ adherent.nom }}"
+                       href="mailto: {{ adherent.email }}"></a>
+                {% endif %}
+                {% if adherent.hasTelephone %}
+                    <a class="fa fa-phone" aria-hidden="true"
+                       title="Téléphoner à  {{ adherent.prenom }} {{ adherent.nom }}"
+                       href="tel: {{ adherent.telephone }}"></a>
                 {% endif %}
             </td>
         </tr>
