@@ -71,9 +71,13 @@
                 <a href="tel: {{ adherent.telephone }}">  {{ adherent.telephone }}</a>
             </td>
             <td>
-                <a href="{{ path('app_adherent_edit', {'id': adherent.id}) }}">
-                    Edit
-                </a>
+                <a  class="fa fa-hand-o-right" aria-hidden="true" title="Editer {{ adherent.prenom}} {{ adherent.nom }}" href="{{ path('app_adherent_edit', {'id': inscription.id}) }}"></a>
+                {% if adherent.hasEmail %}
+                    <a  class="fa fa-envelope-open-o " aria-hidden="true" title="Envoyer un email à  {{ adherent.prenom}} {{ adherent.nom }}" href="mailto: {{ adherent.email }}"></a>
+                {% endif %}
+                {% if adherent.hasTelephone%}
+                    <a  class="fa fa-phone" aria-hidden="true" title="Téléphoner à  {{ adherent.prenom}} {{ adherent.nom }}" href="tel: {{ adherent.telephone }}"></a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

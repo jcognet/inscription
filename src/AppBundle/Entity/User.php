@@ -476,4 +476,20 @@ class User extends BaseUser
         $this
             ->setUsername($this->getEmail());
     }
+
+    /**
+     * Indique si l'utilisatuer a un email
+     * @return int
+     */
+    public function hasEmail(){
+        return strlen($this->getEmail())>0;
+    }
+
+    /**
+     * Indique si l'utilisateur à un téléphone
+     * @return int
+     */
+    public function hasTelephone(){
+        return strlen($this->getTelephone())>0;
+    }
 }
