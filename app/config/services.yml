@@ -66,6 +66,14 @@ services:
           autowire: false
           autoconfigure: false
 
+    AppBundle\Import\Anonymisation:
+          arguments: ["@logger", "@doctrine.orm.default_entity_manager", "@faker.generator"]
+          public: true
+          autowire: false
+          autoconfigure: false
+
+
+
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:

@@ -474,7 +474,8 @@ class User extends BaseUser
     public function setFosValuePreUpdate()
     {
         $this
-            ->setUsername($this->getEmail());
+            ->setUsername($this->getEmail())
+        ->setUsernameCanonical($this->getEmail());
     }
 
     /**
