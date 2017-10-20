@@ -1,0 +1,4 @@
+menu:
+  -
+    name: 'liste'
+    route: 'app_adherent_index'
