@@ -20,6 +20,12 @@ class Element
      */
     protected $listeInvisible = array();
 
+    /**
+     * @var array
+     */
+    protected $listeRoles = array();
+
+
 
     /**
      * @return string
@@ -74,6 +80,26 @@ class Element
         $this->listeInvisible = $listeInvisible;
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getListeRoles(): array
+    {
+        return $this->listeRoles;
+    }
+
+    /**
+     * @param array $listeRoles
+     * @return Element
+     */
+    public function setListeRoles(array $listeRoles): Element
+    {
+        $this->listeRoles = $listeRoles;
+        return $this;
+    }
+
+
 
 
 

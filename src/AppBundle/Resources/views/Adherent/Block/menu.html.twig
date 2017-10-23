@@ -1,0 +1,13 @@
+<ul class="nav nav-pills flex-column">
+    {% for element in liste_elements %}
+        {% set is_granted = false %}
+        {% for role in element.listeRoles %}
+            {% if  not is_granted %}
+                {% set is_granted = is_granted(role) %}
+            {% endif %}
+        {% endfor %}
+        {% if is_granted %}
+            <li  class="nav-item"><a class="nav-link {% if element.route == current_route  %}  active{% endif %}" href="{{ path(element.route) }}">{{ element.name|capitalize }}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>

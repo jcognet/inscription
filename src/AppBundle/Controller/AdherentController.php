@@ -27,6 +27,7 @@ class AdherentController extends Controller
      */
     public function indexAction(Request $request)
     {
+
         $data = $this->getQueryListeAdherent($request);
 
 

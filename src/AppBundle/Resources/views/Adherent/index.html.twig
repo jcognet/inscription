@@ -1,11 +1,11 @@
-{% extends "::base.html.twig" %}
+{% extends "AppBundle:Adherent:base.html.twig" %}
 
 {% block header %}
     Liste des adhérents de la saison  {{ get_saison_courante().annee }}
 {% endblock header %}
 
 {% block title %} Liste des adhérents de la saison {{ get_saison_courante().annee }}{% endblock %}
-{% block body %}
+{% block content %}
 
     <div class="row btn_open_close">
         <h2>Moteur de recherche</h2>

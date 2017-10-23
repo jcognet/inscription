@@ -26,6 +26,18 @@ class CommunController extends Controller
         ]);
     }
 
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function menuGaucheAction(Request $request){
+        return $this->render('AppBundle:Adherent/Block:menu.html.twig', [
+            'liste_elements' => $this->get('AppBundle\Service\Menu\MenuService')->createListeElements('adherent'),
+            'current_route'=>$this->get('request_stack')->getMasterRequest()->attributes->get('_route')
+        ]);
+    }
+
     /**
      * @Route("/changesaison", name="commun_chance_saison")
      */

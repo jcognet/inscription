@@ -2,3 +2,4 @@ menu:
   -
     name: 'liste'
     route: 'app_adherent_index'
+    roles: ['ROLE_ADMIN']

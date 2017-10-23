@@ -1,0 +1,12 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <div class="col-md-2">
+        {{ render(controller('AppBundle:Commun:menuGauche', {request: app.request})) }}
+    </div>
+    <div class="col-md-10">
+        {% block content %}
+            Contenu
+        {% endblock content %}
+    </div>
+{% endblock %}
